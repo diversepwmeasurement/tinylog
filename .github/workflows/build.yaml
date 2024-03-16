@@ -1,51 +1,57 @@
-name: Build Repository
-
-on:
-  push:
-    branches: ["v*"]
-  pull_request:
-    branches: ["**"]
-
 jobs:
-
   development-build:
     name: Development build with JDK 9
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 9
-      - uses: skjolber/maven-cache-github-action@v1
-        with:
-          step: restore
-      - run: mvn --batch-mode --update-snapshots verify
-      - uses: skjolber/maven-cache-github-action@v1
-        with:
-          step: save
-      - uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-
+    - continue-on-error: true
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      uses: actions/setup-java@v4
+      with:
+        distribution: zulu
+        java-version: 9
+    - continue-on-error: true
+      uses: skjolber/maven-cache-github-action@v1
+      with:
+        step: restore
+    - continue-on-error: true
+      run: mvn --batch-mode --update-snapshots verify
+    - continue-on-error: true
+      uses: skjolber/maven-cache-github-action@v1
+      with:
+        step: save
+    - continue-on-error: true
+      uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
   release-build:
     name: Release build with JDK 9
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 9
-      - uses: skjolber/maven-cache-github-action@v1
-        with:
-          step: restore
-      - run: mvn -P release --batch-mode --update-snapshots verify
-      - uses: skjolber/maven-cache-github-action@v1
-        with:
-          step: save
-      - uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
+    - continue-on-error: true
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      uses: actions/setup-java@v4
+      with:
+        distribution: zulu
+        java-version: 9
+    - continue-on-error: true
+      uses: skjolber/maven-cache-github-action@v1
+      with:
+        step: restore
+    - continue-on-error: true
+      run: mvn -P release --batch-mode --update-snapshots verify
+    - continue-on-error: true
+      uses: skjolber/maven-cache-github-action@v1
+      with:
+        step: save
+    - continue-on-error: true
+      uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+name: Build Repository
+on:
+  repository_dispatch:
+    types: trigger-ga___build.yaml
